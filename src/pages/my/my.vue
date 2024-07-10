@@ -1,5 +1,5 @@
 <template>
-  <div class="tabbar">tabbar</div>
+  <div class="my">my</div>
 </template>
 
 <script>
