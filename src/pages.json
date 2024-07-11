@@ -60,7 +60,10 @@
 			"root": "subpackage",
 			"pages": [
 				{
-					"path": "goods_detail",
+					"path": "goods_detail"
+				},
+				{
+					"path": "goods_list"
 				}
 			]
 		}
