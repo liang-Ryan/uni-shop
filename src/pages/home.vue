@@ -1,9 +1,12 @@
 <script setup>
-import { onLoad } from "@dcloudio/uni-app"
-import { ref } from "vue"
+import { onLoad } from '@dcloudio/uni-app'
+import { ref } from 'vue'
 
 // 组件
-import mySearch from "../components/my-search.vue";
+import mySearch from '../components/my-search.vue'
+
+// api
+import { homeGetFloorListAPI, homeGetNavListAPI, homeGetSwiperListAPI } from '../api/home'
 
 // =============================
 // 跳转至商品搜索页
@@ -19,7 +22,9 @@ const toSearch = () => {
 
 const swiperList = ref([])
 const getSwiperList = async () => {
-  const { data: { message, meta } } = await uni.$http.get('/home/swiperdata')
+  const {
+    data: { message, meta }
+  } = await homeGetSwiperListAPI()
 
   if (meta.status !== 200) return uni.$showMsg()
 
@@ -37,22 +42,24 @@ onLoad(() => {
 // 数据渲染
 const navList = ref([])
 const getNavList = async () => {
-  const {data: { message, meta }} = await uni.$http.get('/home/catitems')
+  const {
+    data: { message, meta }
+  } = await homeGetNavListAPI()
 
   if (meta.status !== 200) return uni.$showMsg()
-  
+
   navList.value = message
 }
-onLoad(()=> {
+onLoad(() => {
   getNavList()
 })
 
 // 点击跳转
 const navClickHandle = (item) => {
-  switch(item.name) {
+  switch (item.name) {
     case '分类':
-      uni.switchTab({ url: '/pages/category'})
-      console.log(item.name);
+      uni.switchTab({ url: '/pages/category' })
+      console.log(item.name)
       break
     default:
       break
@@ -65,19 +72,21 @@ const navClickHandle = (item) => {
 
 const floorList = ref([])
 const getFloorList = async () => {
-  const { data: { message, meta }} = await uni.$http.get('/home/floordata')
+  const {
+    data: { message, meta }
+  } = await homeGetFloorListAPI()
 
   if (meta.status !== 200) return uni.$showMsg()
 
   floorList.value = message
 
-  message.forEach(floor => {
-    floor.product_list.forEach(item => {
+  message.forEach((floor) => {
+    floor.product_list.forEach((item) => {
       item.url = '/subpackage/goods_list?' + item.navigator_url.split('?')[1]
     })
   })
 }
-onLoad(()=> {
+onLoad(() => {
   getFloorList()
 })
 
@@ -87,7 +96,7 @@ onLoad(()=> {
 <template>
   <!-- 搜索栏 -->
   <view class="search-body"></view>
-   <my-search @toSearch="toSearch"></my-search>
+  <my-search @toSearch="toSearch"></my-search>
 
   <!-- 轮播图 -->
   <view>
@@ -102,7 +111,12 @@ onLoad(()=> {
 
   <!-- 导航栏 -->
   <view class="nav-list">
-    <dviewiv class="nav-list-item" v-for="(item, index) in navList" :key="index" @click="navClickHandle(item)">
+    <dviewiv
+      class="nav-list-item"
+      v-for="(item, index) in navList"
+      :key="index"
+      @click="navClickHandle(item)"
+    >
       <image :src="item.image_src" />
     </dviewiv>
   </view>
@@ -111,10 +125,7 @@ onLoad(()=> {
   <view class="floor-list">
     <view class="floor-list-item" v-for="(item, index) in floorList" :key="index">
       <!-- 标题 -->
-      <image
-        class="floor-title"
-        :src="item.floor_title.image_src"
-      />
+      <image class="floor-title" :src="item.floor_title.image_src" />
 
       <!-- 图片 -->
       <view class="floor-image-list">
@@ -127,10 +138,14 @@ onLoad(()=> {
             mode="widthFix"
           />
         </navigator>
-          
+
         <!-- 小图 -->
         <view class="floor-image-small-list">
-          <navigator v-for="(image, img_index) in item.product_list.slice(1)" :key="img_index" :url="image.url">
+          <navigator
+            v-for="(image, img_index) in item.product_list.slice(1)"
+            :key="img_index"
+            :url="image.url"
+          >
             <image
               :style="{ width: image.image_width + 'rpx' }"
               class="floor-image-small"

@@ -5,6 +5,9 @@ import { ref } from 'vue'
 // 组件
 import myGood from '../components/my-good.vue'
 
+// api
+import { goodListGetGoodslistAPI } from '../api/goodsList'
+
 // =============================
 // 商品列表
 // =============================
@@ -27,7 +30,7 @@ const getGoods = async (fn) => {
 
   const {
     data: { message, meta }
-  } = await uni.$http.get('/goods/search', queryObj)
+  } = await goodListGetGoodslistAPI(queryObj)
 
   if (meta.status !== 200) return uni.$showMsg()
 

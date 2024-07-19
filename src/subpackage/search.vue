@@ -2,6 +2,9 @@
 import { onLoad } from '@dcloudio/uni-app'
 import { ref } from 'vue'
 
+// api
+import { searchGetSearchResultAPI } from '../api/search'
+
 // =============================
 // 搜索建议
 // =============================
@@ -22,7 +25,7 @@ const getSearchResult = () => {
     } else {
       const {
         data: { message, meta }
-      } = await uni.$http.get('/goods/qsearch', { query: searchInput.value.trim() })
+      } = await searchGetSearchResultAPI(searchInput.value.trim())
 
       if (meta.status !== 200) return uni.$showMsg()
 

@@ -1,24 +1,29 @@
 <script setup>
-import { onLoad } from '@dcloudio/uni-app';
+import { onLoad } from '@dcloudio/uni-app'
 import { ref, computed } from 'vue'
 
 // 组件
-import mySearch from '../components/my-search.vue';
+import mySearch from '../components/my-search.vue'
+
+// api
+import { categoryGetCategoryListAPI } from '../api/category'
 
 // =============================
 // 获取分类数据
 // =============================
 
 const categoryList = ref([])
-const categoryChildren = computed(()=>{
+const categoryChildren = computed(() => {
   return categoryList.value[active.value]?.children
 })
 
 const getCategoryList = async () => {
-  const { data: { message, meta } } = await uni.$http.get('/categories')
-  
+  const {
+    data: { message, meta }
+  } = await categoryGetCategoryListAPI()
+
   if (meta.status !== 200) return uni.$showMsg()
-  
+
   categoryList.value = message
 }
 
@@ -70,29 +75,42 @@ const toSearch = () => {
 
   <view class="scroll-view">
     <!-- 左侧-一级分类 -->
-    <scroll-view class="scroll-left" scroll-y style="height: calc(100vh - 50px);">
-      <view :class="['scroll-left-item', index === active ? 'active': '']" v-for="(item, index) in categoryList" :key="index" @click="setCategory(index)">
+    <scroll-view class="scroll-left" scroll-y style="height: calc(100vh - 50px)">
+      <view
+        :class="['scroll-left-item', index === active ? 'active' : '']"
+        v-for="(item, index) in categoryList"
+        :key="index"
+        @click="setCategory(index)"
+      >
         {{ item.cat_name }}
       </view>
     </scroll-view>
 
-    <scroll-view class="scroll-right" scroll-y :scroll-top="scrollTop" @scroll="scrollHandle" style="height: calc(100vh - 50px);">
-      <view class="scroll-right-content" v-for= "(channel, index) in categoryChildren" :key="index">
+    <scroll-view
+      class="scroll-right"
+      scroll-y
+      :scroll-top="scrollTop"
+      @scroll="scrollHandle"
+      style="height: calc(100vh - 50px)"
+    >
+      <view class="scroll-right-content" v-for="(channel, index) in categoryChildren" :key="index">
         <!-- 右侧-二级分类标题 -->
         <view class="scroll-right-title">/ {{ channel.cat_name }} /</view>
-        
+
         <!-- 右侧-三级分类商品 -->
         <view class="scroll-right-list">
-          <view class="scroll-right-item" v-for="(item, index) in channel.children" :key="index" @click="toGoodsList(item.cat_id)">
-            <image
-            :src="item.cat_icon"
-            mode="scaleToFill"
-          />
-          <text>{{ item.cat_name }}</text>
+          <view
+            class="scroll-right-item"
+            v-for="(item, index) in channel.children"
+            :key="index"
+            @click="toGoodsList(item.cat_id)"
+          >
+            <image :src="item.cat_icon" mode="scaleToFill" />
+            <text>{{ item.cat_name }}</text>
           </view>
         </view>
       </view>
-    </scroll-view> 
+    </scroll-view>
   </view>
 </template>
 
@@ -104,7 +122,7 @@ const toSearch = () => {
     width: 120px;
 
     .scroll-left-item {
-      background-color: #F7F7F7;
+      background-color: #f7f7f7;
 
       font-size: 12px;
       line-height: 60px;
@@ -131,7 +149,7 @@ const toSearch = () => {
     }
   }
 
-  .scroll-right-title{
+  .scroll-right-title {
     padding: 15px 0;
 
     font-size: 12px;
@@ -146,7 +164,7 @@ const toSearch = () => {
 
     .scroll-right-item {
       width: 33.33%;
-      
+
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -162,5 +180,4 @@ const toSearch = () => {
     }
   }
 }
-
 </style>
