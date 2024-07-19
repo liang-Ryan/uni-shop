@@ -2,6 +2,9 @@
 import { onLoad } from '@dcloudio/uni-app';
 import { ref, computed } from 'vue'
 
+// 组件
+import mySearch from '../components/my-search.vue';
+
 // =============================
 // 获取分类数据
 // =============================
@@ -52,18 +55,28 @@ const toGoodsList = (id) => {
 }
 
 // =============================
+// 跳转至商品搜索页
+// =============================
+
+const toSearch = () => {
+  uni.navigateTo({ url: '/subpackage/search' })
+}
+
+// =============================
 </script>
 
 <template>
+  <my-search @toSearch="toSearch"></my-search>
+
   <view class="scroll-view">
     <!-- 左侧-一级分类 -->
-    <scroll-view class="scroll-left" scroll-y style="height: 100vh;">
+    <scroll-view class="scroll-left" scroll-y style="height: calc(100vh - 50px);">
       <view :class="['scroll-left-item', index === active ? 'active': '']" v-for="(item, index) in categoryList" :key="index" @click="setCategory(index)">
         {{ item.cat_name }}
       </view>
     </scroll-view>
 
-    <scroll-view class="scroll-right" scroll-y :scroll-top="scrollTop" @scroll="scrollHandle" style="height: 100vh;">
+    <scroll-view class="scroll-right" scroll-y :scroll-top="scrollTop" @scroll="scrollHandle" style="height: calc(100vh - 50px);">
       <view class="scroll-right-content" v-for= "(channel, index) in categoryChildren" :key="index">
         <!-- 右侧-二级分类标题 -->
         <view class="scroll-right-title">/ {{ channel.cat_name }} /</view>

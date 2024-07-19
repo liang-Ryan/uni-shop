@@ -64,6 +64,9 @@
 				},
 				{
 					"path": "goods_list"
+				},
+				{
+					"path": "search"
 				}
 			]
 		}

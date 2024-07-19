@@ -2,6 +2,17 @@
 import { onLoad } from "@dcloudio/uni-app"
 import { ref } from "vue"
 
+// 组件
+import mySearch from "../components/my-search.vue";
+
+// =============================
+// 跳转至商品搜索页
+// =============================
+
+const toSearch = () => {
+  uni.navigateTo({ url: '/subpackage/search' })
+}
+
 // =============================
 // 轮播图
 // =============================
@@ -65,45 +76,21 @@ const getFloorList = async () => {
       item.url = '/subpackage/goods_list?' + item.navigator_url.split('?')[1]
     })
   })
-  console.log(message);
 }
 onLoad(()=> {
   getFloorList()
 })
 
-// export default {
-//   components: {},
-//   data() {
-//     return {}
-//   },
-//   computed: {},
-//   methods: {},
-//   watch: {},
-
-//   // 页面周期函数--监听页面加载
-//   onLoad() { },
-//   // 页面周期函数--监听页面初次渲染完成
-//   onReady() { },
-//   // 页面周期函数--监听页面显示(not-nvue)
-//   onShow() { },
-//   // 页面周期函数--监听页面隐藏
-//   onHide() { },
-//   // 页面周期函数--监听页面卸载
-//   onUnload() { },
-//   // 页面处理函数--监听用户下拉动作
-//   // onPullDownRefresh() { uni.stopPullDownRefresh(); },
-//   // 页面处理函数--监听用户上拉触底
-//   // onReachBottom() {},
-//   // 页面处理函数--监听页面滚动(not-nvue)
-//   // onPageScroll(event) {},
-//   // 页面处理函数--用户点击右上角分享
-//   // onShareAppMessage(options) {},
-// }
+// =============================
 </script>
 
 <template>
+  <!-- 搜索栏 -->
+  <view class="search-body"></view>
+   <my-search @toSearch="toSearch"></my-search>
+
   <!-- 轮播图 -->
-  <div>
+  <view>
     <swiper indicator-dots autoplay circular interval="3000" duration="1000">
       <swiper-item v-for="(item, index) in swiperList" :key="index">
         <navigator :url="`/subpackage/goods_detail?goods_id=${item.goods_id}`">
@@ -111,18 +98,18 @@ onLoad(()=> {
         </navigator>
       </swiper-item>
     </swiper>
-  </div>
+  </view>
 
   <!-- 导航栏 -->
-  <div class="nav-list">
-    <div class="nav-list-item" v-for="(item, index) in navList" :key="index" @click="navClickHandle(item)">
+  <view class="nav-list">
+    <dviewiv class="nav-list-item" v-for="(item, index) in navList" :key="index" @click="navClickHandle(item)">
       <image :src="item.image_src" />
-    </div>
-  </div>
+    </dviewiv>
+  </view>
 
   <!-- 楼层区 -->
-  <div class="floor-list">
-    <div class="floor-list-item" v-for="(item, index) in floorList" :key="index">
+  <view class="floor-list">
+    <view class="floor-list-item" v-for="(item, index) in floorList" :key="index">
       <!-- 标题 -->
       <image
         class="floor-title"
@@ -130,7 +117,7 @@ onLoad(()=> {
       />
 
       <!-- 图片 -->
-      <div class="floor-image-list">
+      <view class="floor-image-list">
         <!-- 大图 -->
         <navigator :url="item.product_list[0].url">
           <image
@@ -142,7 +129,7 @@ onLoad(()=> {
         </navigator>
           
         <!-- 小图 -->
-        <div class="floor-image-small-list">
+        <view class="floor-image-small-list">
           <navigator v-for="(image, img_index) in item.product_list.slice(1)" :key="img_index" :url="image.url">
             <image
               :style="{ width: image.image_width + 'rpx' }"
@@ -151,13 +138,20 @@ onLoad(()=> {
               mode="widthFix"
             />
           </navigator>
-        </div>
-      </div>
-    </div>
-  </div>
+        </view>
+      </view>
+    </view>
+  </view>
 </template>
 
 <style lang="scss">
+// 搜索栏
+.search-body {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+}
+
 // 轮播图
 swiper {
   height: 330rpx;
