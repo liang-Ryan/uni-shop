@@ -6,7 +6,7 @@ import { ref } from 'vue'
 import myGood from '../components/my-good.vue'
 
 // api
-import { goodListGetGoodslistAPI } from '../api/goodsList'
+import { goodsGetGoodsListAPI } from '../api/goods'
 
 // =============================
 // 商品列表
@@ -30,7 +30,7 @@ const getGoods = async (fn) => {
 
   const {
     data: { message, meta }
-  } = await goodListGetGoodslistAPI(queryObj)
+  } = await goodsGetGoodsListAPI(queryObj)
 
   if (meta.status !== 200) return uni.$showMsg()
 
