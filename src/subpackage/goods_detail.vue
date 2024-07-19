@@ -1,49 +1,192 @@
-<template>
-  <div class="goods_detial">
-    goods_detial + {{ goods_id }}
-  </div>
-</template>
-
 <script setup>
 import { onLoad } from '@dcloudio/uni-app'
 import { ref } from 'vue'
 
-const goods_id = ref('')
+// api
+import { goodsGetGoodsDetailAPI } from '../api/goods'
+
+// =============================
+// 商品详情
+// =============================
+
+const goodsDetail = ref({})
+const getGoodsDetail = async (id) => {
+  const {
+    data: { message, meta }
+  } = await goodsGetGoodsDetailAPI(id)
+
+  if (meta.status !== 200) return uni.$showMsg()
+
+  // 商品详情图片处理
+  message.goods_introduce = message.goods_introduce.replace(
+    /<img /g,
+    '<img style="display: block;" '
+  )
+
+  goodsDetail.value = message
+}
 
 onLoad((options) => {
-  goods_id.value = options
+  getGoodsDetail(options)
 })
 
+// =============================
+// 图片预览
+// =============================
 
-// import Vue from 'vue';
-// export default Vue.extend({
-//   components: {},
-//   data() {
-//     return {}
-//   },
-//   computed: {},
-//   methods: {},
-//   watch: {},
+const imagePreview = (index) => {
+  uni.previewImage({
+    current: index,
+    urls: goodsDetail.value.pics.map((item) => {
+      return item.pics_big
+    })
+  })
+}
 
-//   // 页面周期函数--监听页面加载
-//   onLoad() {},
-//   // 页面周期函数--监听页面初次渲染完成
-//   onReady() {},
-//   // 页面周期函数--监听页面显示(not-nvue)
-//   onShow() {},
-//   // 页面周期函数--监听页面隐藏
-//   onHide() {},
-//   // 页面周期函数--监听页面卸载
-//   onUnload() {},
-//   // 页面处理函数--监听用户下拉动作
-//   // onPullDownRefresh() { uni.stopPullDownRefresh(); },
-//   // 页面处理函数--监听用户上拉触底
-//   // onReachBottom() {},
-//   // 页面处理函数--监听页面滚动(not-nvue)
-//   // onPageScroll(event) {},
-//   // 页面处理函数--用户点击右上角分享
-//   // onShareAppMessage(options) {},
-// }) 
+// =============================
+// 底部导航
+// =============================
+
+const navOptions = ref([
+  {
+    icon: 'shop',
+    text: '店铺'
+  },
+  {
+    icon: 'cart',
+    text: '购物车',
+    info: 2
+  }
+])
+const navButtonGroup = [
+  {
+    text: '加入购物车',
+    backgroundColor: '#ff0000',
+    color: '#fff'
+  },
+  {
+    text: '立即购买',
+    backgroundColor: '#ffa200',
+    color: '#fff'
+  }
+]
+
+const onClick = (e) => {
+  if (e.content.text === '购物车') {
+    uni.switchTab({ url: '/pages/cart' })
+  } else if (e.content.text === '店铺') {
+    uni.showToast({
+      title: e.content.text,
+      icon: 'none'
+    })
+  }
+}
+const buttonClick = (e) => {
+  uni.showToast({
+    title: e.content.text,
+    icon: 'none'
+  })
+
+  navOptions.value[1].info++
+}
+
+// =============================
 </script>
 
-<style scoped></style>
+<template>
+  <!-- 轮播图 -->
+  <swiper indicator-dots autoplay circular interval="3000" duration="500">
+    <swiper-item v-for="(item, index) in goodsDetail.pics" :key="index">
+      <image :src="item.pics_big" @click="imagePreview(index)" />
+    </swiper-item>
+  </swiper>
+
+  <!-- 商品信息 -->
+  <view class="goods-info">
+    <view class="goods-info-price">￥{{ goodsDetail.goods_price }}</view>
+
+    <view class="goods-info-box">
+      <view class="info-box-name">{{ goodsDetail.goods_name }}</view>
+      <view class="info-box-favorite">
+        <uni-icons type="star" color="gray" size="18" />
+        <text>收藏</text>
+      </view>
+    </view>
+
+    <view class="goods-info-freight">快递：免运费</view>
+
+    <!-- 商品详情 -->
+    <rich-text class="goods-introduce" :nodes="goodsDetail.goods_introduce"></rich-text>
+  </view>
+
+  <view class="goods-nav">
+    <uni-goods-nav
+      fill
+      :options="navOptions"
+      :button-group="navButtonGroup"
+      @click="onClick"
+      @button-click="buttonClick"
+    />
+  </view>
+</template>
+
+<style lang="scss">
+// 轮播图
+swiper {
+  height: 750rpx;
+
+  image {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+// 商品信息
+.goods-info {
+  padding: 10px;
+  padding-bottom: 50px;
+
+  .goods-info-price {
+    margin: 10px 0;
+
+    font-size: 18px;
+    color: #c00000;
+  }
+
+  .goods-info-box {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+
+    .info-box-name {
+      font-size: 13px;
+    }
+    .info-box-favorite {
+      width: 120px;
+      border-left: 1px solid #efefef;
+
+      font-size: 12px;
+      color: gray;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+
+  .goods-info-freight {
+    margin: 10px 0;
+
+    font-size: 12px;
+    color: gray;
+  }
+}
+
+.goods-nav {
+  width: 100%;
+
+  position: fixed;
+  bottom: 0;
+}
+</style>
