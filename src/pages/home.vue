@@ -1,5 +1,5 @@
 <script setup>
-import { onLoad } from '@dcloudio/uni-app'
+import { onLoad, onShow } from '@dcloudio/uni-app'
 import { ref } from 'vue'
 
 // 组件
@@ -7,6 +7,9 @@ import mySearch from '../components/my-search.vue'
 
 // api
 import { homeGetFloorListAPI, homeGetNavListAPI, homeGetSwiperListAPI } from '../api/home'
+
+// hooks
+import { useSetBadge } from '../hooks/useSetBadge'
 
 // =============================
 // 跳转至商品搜索页
@@ -88,6 +91,15 @@ const getFloorList = async () => {
 }
 onLoad(() => {
   getFloorList()
+})
+
+// =============================
+// 购物车上标
+// =============================
+
+const { setBadge } = useSetBadge()
+onShow(() => {
+  setBadge()
 })
 
 // =============================

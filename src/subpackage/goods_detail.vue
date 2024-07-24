@@ -5,6 +5,10 @@ import { ref } from 'vue'
 // api
 import { goodsGetGoodsDetailAPI } from '../api/goods'
 
+// store
+import { useCartStore } from '../store/cart'
+const cartStore = useCartStore()
+
 // =============================
 // 商品详情
 // =============================
@@ -55,7 +59,7 @@ const navOptions = ref([
   {
     icon: 'cart',
     text: '购物车',
-    info: 2
+    info: cartStore.cartCount
   }
 ])
 const navButtonGroup = [
@@ -72,22 +76,36 @@ const navButtonGroup = [
 ]
 
 const onClick = (e) => {
-  if (e.content.text === '购物车') {
-    uni.switchTab({ url: '/pages/cart' })
-  } else if (e.content.text === '店铺') {
+  if (e.content.text === '店铺') {
     uni.showToast({
       title: e.content.text,
       icon: 'none'
     })
+  } else if (e.content.text === '购物车') {
+    uni.switchTab({ url: '/pages/cart' })
   }
 }
+
+// 加入购物车 / 立即购买
 const buttonClick = (e) => {
+  if (e.content.text === '加入购物车') {
+    const goods = {
+      goods_id: goodsDetail.value.goods_id,
+      goods_name: goodsDetail.value.goods_name,
+      goods_price: goodsDetail.value.goods_price,
+      goods_count: 1,
+      goods_small_logo: goodsDetail.value.goods_small_logo,
+      goods_state: true // 商品勾选状态
+    }
+
+    cartStore.addToCart(goods)
+    navOptions.value[1].info = cartStore.cartCount
+  }
+
   uni.showToast({
     title: e.content.text,
     icon: 'none'
   })
-
-  navOptions.value[1].info++
 }
 
 // =============================

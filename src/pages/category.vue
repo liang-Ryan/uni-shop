@@ -1,5 +1,5 @@
 <script setup>
-import { onLoad } from '@dcloudio/uni-app'
+import { onLoad, onShow } from '@dcloudio/uni-app'
 import { ref, computed } from 'vue'
 
 // 组件
@@ -7,6 +7,9 @@ import mySearch from '../components/my-search.vue'
 
 // api
 import { categoryGetCategoryListAPI } from '../api/category'
+
+// hooks
+import { useSetBadge } from '../hooks/useSetBadge'
 
 // =============================
 // 获取分类数据
@@ -66,6 +69,15 @@ const toGoodsList = (id) => {
 const toSearch = () => {
   uni.navigateTo({ url: '/subpackage/search' })
 }
+
+// =============================
+// 购物车上标
+// =============================
+
+const { setBadge } = useSetBadge()
+onShow(() => {
+  setBadge()
+})
 
 // =============================
 </script>
