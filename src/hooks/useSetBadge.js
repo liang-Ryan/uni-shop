@@ -6,6 +6,7 @@ export const useSetBadge = () => {
   // =============================
   // 加载购物车上标
   // =============================
+
   const setBadge = () => {
     if (cartStore.cartCount > 0) {
       uni.setTabBarBadge({
@@ -14,8 +15,6 @@ export const useSetBadge = () => {
       })
     }
   }
-
-  // =============================
 
   return {
     setBadge

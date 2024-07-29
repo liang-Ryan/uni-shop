@@ -3,6 +3,22 @@ import { computed, ref } from "vue";
 
 export const useUserStore = defineStore('userStore', ()=> {
   // =============================
+  // 身份信息
+  // =============================
+
+  const userInfo = ref(
+    uni.getStorageSync('userStore')
+     ? JSON.parse(uni.getStorageSync('userStore')).userInfo
+     : {}
+  )
+  const token = ref(
+    uni.getStorageSync('userStore')
+     ? JSON.parse(uni.getStorageSync('userStore')).token
+     : ''
+  )
+  // const token = ref('Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjIzLCJpYXQiOjE1NjQ3MzAwNzksImV4cCI6MTAwMTU2NDczMDA3OH0.YPt-XeLnjV-_1ITaXGY2FhxmCe4NvXuRnRB8OMCfnPo')
+
+  // =============================
   // 收货地址
   // =============================
 
@@ -33,6 +49,9 @@ export const useUserStore = defineStore('userStore', ()=> {
   // =============================
 
   return {
+    // 身份信息
+    userInfo,
+    token,
     // 收货地址
     address,
     completeAddress,
@@ -40,6 +59,7 @@ export const useUserStore = defineStore('userStore', ()=> {
     setAddress
   }
 }, {
+  // 持久化
   persist: {
     storage: {
       getItem(key) {

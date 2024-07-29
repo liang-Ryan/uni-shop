@@ -73,6 +73,12 @@ export const useCartStore = defineStore('cartStore', () => {
   })
 
   // =============================
+  // 返回到其他页面
+  // =============================
+
+  let returnPage = ''
+
+  // =============================
 
   return {
     // 购物车列表
@@ -86,9 +92,12 @@ export const useCartStore = defineStore('cartStore', () => {
     selectedPriceSum,
     // 全选判断
     setAllSelected,
-    isAllSelected
+    isAllSelected,
+    // 返回到其他页面
+    returnPage
   }
 }, {
+  // 持久化
   persist: {
     storage: {
       getItem(key) {

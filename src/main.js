@@ -1,9 +1,9 @@
-// request
-import uni from "./utils/request";
-
 // pinia
 import { createPinia } from "pinia";
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+
+// request
+import uni from "./utils/request";
 
 // app
 import { createSSRApp } from "vue";
